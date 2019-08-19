@@ -61,7 +61,7 @@ public class Account extends BaseDomain {
 	public static Account empty(Long id) {
 		Account account = new Account();
 		account.setId(id);
-		//账户授信额度
+		//账户授信额度,初始额度2000
 		account.setBorrowLimitAmount(BidConst.DEFALUT_BORROWLIMITAMOUNT);
 		//账户剩余授信额度
 		account.setRemainBorrowLimit(BidConst.DEFALUT_BORROWLIMITAMOUNT);
