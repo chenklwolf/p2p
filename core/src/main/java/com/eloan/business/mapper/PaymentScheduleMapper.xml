@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eloan.business.mapper.PaymentScheduleMapper">
+
+	<resultMap type="PaymentSchedule" id="paymentschedule_mapping">
+		<!-- 基本属性 -->
+		<id property="id" column="id"/>
+		<result property="deadLine" column="deadline"/>
+		<result property="payDate" column="payDate"/>
+		<result property="totalAmount" column="totalamount"/>
+		<result property="principal" column="principal"/>
+		<result property="interest" column="interest"/>
+		<result property="monthIndex" column="monthindex"/>
+		<result property="state" column="state"/>
+		<result property="bidRequestType" column="bidrequesttype"/>
+		<result property="returnType" column="returntype"/>
+		<result property="bidRequestId" column="bidrequest_id"/>
+		<result property="bidRequestTitle" column="bidRequestTitle"/>
+		
+		<association property="bidUser" column="biduser_id" select="com.eloan.base.mapper.LogininfoMapper.selectByPrimaryKey" />
+		<collection property="paymentScheduleDetails" column="id" select="com.eloan.business.mapper.PaymentScheduleDetailMapper.getPaymentScheduleDetailBySchedule" />
+	</resultMap>
+
+	<sql id="paymentschedule_columns">
+		id,bidrequest_id,deadline,payDate,totalamount,principal,interest,bidrequesttype,
+		monthindex,state,returntype,biduser_id,bidRequestTitle
+	</sql>
+	
+	<sql id="base_where">
+		<where>
+			<if test="state >= 0">
+				AND state = #{state}
+			</if>
+			<if test="loginInfoId !=null">
+				AND biduser_id = #{loginInfoId}
+			</if>
+			<if test="bidRequestId !=null">
+				AND bidrequest_id = #{bidRequestId}
+			</if>
+		</where>
+	</sql>
+	
+	<!-- 
+	<select id="getPaymentScheduleBy" resultMap="paymentschedule_mapping">
+		select <include refid="paymentschedule_columns" />
+		from paymentschedule
+		<include refid="base_where" />
+		<if test="pageSize>-1">
+			LIMIT #{start},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getPaymentScheduleTotalCount" resultType="long">
+		select count(id)
+		from paymentschedule
+		<include refid="base_where" />
+	</select> 
+	 -->
+
+	<!-- 根据一个借款得到该借款下的所有还款计划 -->
+	<select id="getPaymentScheduleByBidRequest" resultMap="paymentschedule_mapping">
+		SELECT <include refid="paymentschedule_columns"/>
+		FROM paymentschedule
+		WHERE bidrequest_id = #{bidRequestId}
+	</select>
+
+	<!-- 添加新的还款计划对象，默认自动增长id，可以获取 -->
+	<insert id="addPaymentSchedule" parameterType="PaymentSchedule" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+		insert into paymentschedule(
+							bidrequest_id,deadline,payDate,totalamount,principal,interest,bidrequesttype,monthindex,
+							state,returntype,biduser_id,bidRequestTitle)
+    	values (#{bidRequestId}, #{deadLine},#{payDate},#{totalAmount}, #{principal}, #{interest},
+      		    #{bidRequestType}, #{monthIndex},#{state},#{returnType},#{bidUser.id},#{bidRequestTitle})
+	</insert>
+
+	<!-- 修改还款计划 -->
+	<update id="update" parameterType="PaymentSchedule">
+		UPDATE paymentschedule SET state=#{state},totalamount=#{totalAmount},
+								   paydate=#{payDate},returntype=#{returnType}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 得到一个分期还款计划对象 -->
+	<select id="getPaymentSchedule" resultMap="paymentschedule_mapping">
+		SELECT <include refid="paymentschedule_columns"/>
+		FROM paymentschedule
+		WHERE id = #{id}
+	</select>
+
+</mapper>

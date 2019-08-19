@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="uiweb:war">
+    <output-path>$PROJECT_DIR$/uiweb/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>uiweb</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="uiweb-1.0.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="uiweb:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eloan.business.mapper.PaymentScheduleDetailMapper">
+
+	<resultMap type="PaymentScheduleDetail" id="paymentscheduledetail_mapping">
+		<!-- 基本属性 -->
+		<id property="id" column="id"/>
+		<result property="bidAmount" column="bidamount"/>
+		<result property="bidId" column="bid_id"/>
+		<result property="totalAmount" column="totalamount"/>
+		<result property="principal" column="principal"/>
+		<result property="interest" column="interest"/>
+		<result property="monthIndex" column="monthindex"/>
+		<result property="deadline" column="deadline"/>
+		<result property="bidRequestId" column="bidrequest_id"/>
+		<result property="payDate" column="paydate"/>
+		<result property="returnType" column="returntype"/>
+		<result property="paymentScheduleId" column="paymentschedule_id"/>
+
+		<association property="fromLoginInfo" javaType="Logininfo" columnPrefix="fl_">
+			<id column="id" property="id"/>
+			<result column="username" property="username"/>
+		</association>
+		<association property="toLoginInfo" javaType="Logininfo" columnPrefix="tl_">
+			<id column="id" property="id"/>
+			<result column="username" property="username"/>
+		</association>
+	</resultMap>
+
+	<sql id="paymentscheduledetail_columns">
+		psd.id,psd.bidamount,psd.bid_id,psd.totalamount,psd.principal,
+		psd.interest,psd.monthindex,psd.deadline,psd.bidrequest_id,psd.paydate,
+		psd.returntype,psd.paymentschedule_id,
+		fl.id as fl_id,fl.username as fl_username,
+		tl.id as tl_id,tl.username as tl_username
+	</sql>
+	
+	<!-- 添加新的还款计划明细对象 -->
+	<insert id="addPaymentScheduleDetail" parameterType="PaymentScheduleDetail" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+		insert into paymentscheduledetail(bidamount,bid_id,
+							totalamount,principal,interest,monthindex,deadline,bidrequest_id,
+							paydate,returntype,paymentschedule_id,fromlogininfo_id,tologininfo_id)
+    	values (#{bidAmount},#{bidId},#{totalAmount},#{principal},#{interest}, #{monthIndex}, #{deadline},
+      		    #{bidRequestId},#{payDate},#{returnType},#{paymentScheduleId},#{fromLoginInfo.id},#{toLoginInfo.id})
+	</insert>
+
+	<!-- 修改还款计划明细 -->
+	<update id="update" parameterType="PaymentScheduleDetail">
+		UPDATE paymentscheduledetail SET paydate=#{payDate},tologininfo_id = #{toLoginInfo.id}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据一个分期还款计划得到该分期还款计划下所有的还款计划明细 -->
+	<select id="getPaymentScheduleDetailBySchedule" resultMap="paymentscheduledetail_mapping">
+		select <include refid="paymentscheduledetail_columns"/>
+		from paymentscheduledetail psd join logininfo fl on psd.fromlogininfo_id = fl.id join logininfo tl on psd.tologininfo_id = tl.id
+		where paymentschedule_id = #{scheduleId}
+	</select>
+
+	<!-- 根据id查询PaymentScheduleDetail -->
+	<select id="getPaymentScheduleDetailById" resultMap="paymentscheduledetail_mapping">
+		select <include refid="paymentscheduledetail_columns"/>
+		from paymentscheduledetail psd join logininfo fl on psd.fromlogininfo_id = fl.id join logininfo tl on psd.tologininfo_id = tl.id
+		where psd.id = #{id}
+	</select>
+
+</mapper>

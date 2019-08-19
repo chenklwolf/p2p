@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eloan.business.mapper.CompanyBankInfoMapper">
+
+
+	<resultMap id="BaseResultMap" type="CompanyBankInfo">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="bankname" property="bankname" jdbcType="VARCHAR" />
+		<result column="accountname" property="accountname" jdbcType="VARCHAR" />
+		<result column="banknumber" property="banknumber" jdbcType="VARCHAR" />
+		<result column="bankforkname" property="bankforkname" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, bankname, accountname, banknumber, bankforkname
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from companybankinfo
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap" useCache="true">
+		select
+		<include refid="Base_Column_List" />
+		from companybankinfo
+	</select>
+
+	<insert id="insert" parameterType="CompanyBankInfo">
+		insert into companybankinfo (id, bankname, accountname,
+		banknumber, bankforkname
+		)
+		values (#{id,jdbcType=BIGINT}, #{bankname,jdbcType=VARCHAR}, #{accountname,jdbcType=VARCHAR},
+		#{banknumber,jdbcType=VARCHAR}, #{bankforkname,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="updateByPrimaryKey" parameterType="CompanyBankInfo">
+		update companybankinfo
+		set bankname = #{bankname,jdbcType=VARCHAR},
+		accountname = #{accountname,jdbcType=VARCHAR},
+		banknumber = #{banknumber,jdbcType=VARCHAR},
+		bankforkname = #{bankforkname,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<select id="queryForCount" resultType="int" useCache="false">
+		SELECT count(id) from companybankinfo
+	</select>
+	
+	<select id="query" resultMap="BaseResultMap" useCache="false">
+		select <include refid="Base_Column_List"/>
+		from companybankinfo
+		<if test="pageSize>-1">
+			LIMIT ${start},${pageSize}
+		</if>
+	</select>
+</mapper>

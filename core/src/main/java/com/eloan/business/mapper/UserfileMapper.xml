@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eloan.business.mapper.UserfileMapper">
+	<resultMap id="BaseResultMap" type="com.eloan.business.domain.Userfile">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="state" property="state" jdbcType="TINYINT" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="auditTime" property="auditTime" jdbcType="TIMESTAMP" />
+		<result column="applyTime" property="applyTime" jdbcType="TIMESTAMP" />
+		<result column="score" property="score" jdbcType="TINYINT" />
+		<result column="file" property="file" jdbcType="VARCHAR" />
+
+		<association property="applier" javaType="Logininfo"
+			columnPrefix="a_">
+			<id column="id" property="id" />
+			<result column="username" property="username" />
+		</association>
+		<association property="auditor" javaType="Logininfo"
+			columnPrefix="at_">
+			<id column="id" property="id" />
+			<result column="username" property="username" />
+		</association>
+		<association property="fileType" javaType="SystemDictionaryItem" column="filetype_id" select="com.eloan.base.mapper.SystemDictionaryItemMapper.selectByPrimaryKey" />
+	</resultMap>
+
+	<insert id="insert" parameterType="com.eloan.business.domain.Userfile"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into userfile (state, remark, auditTime,
+		applyTime, auditor_id, applier_id,
+		score, file, filetype_id)
+		values (#{state,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR},
+		#{auditTime,jdbcType=TIMESTAMP},
+		#{applyTime,jdbcType=TIMESTAMP}, #{auditor.id,jdbcType=BIGINT}, #{applier.id,jdbcType=BIGINT},
+		#{score,jdbcType=TINYINT}, #{file,jdbcType=VARCHAR},
+		#{fileType.id,jdbcType=BIGINT})
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.eloan.business.domain.Userfile">
+		update userfile
+		set state = #{state,jdbcType=TINYINT},
+		remark = #{remark,jdbcType=VARCHAR},
+		auditTime = #{auditTime,jdbcType=TIMESTAMP},
+		applyTime = #{applyTime,jdbcType=TIMESTAMP},
+		auditor_id = #{auditor.id,jdbcType=BIGINT},
+		applier_id = #{applier.id,jdbcType=BIGINT},
+		score = #{score,jdbcType=TINYINT},
+		file = #{file,jdbcType=VARCHAR},
+		filetype_id = #{fileType.id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<sql id="base_column">
+		uf.id, uf.score, uf.filetype_id,uf.file, uf.state, uf.remark,
+			   uf.auditTime, uf.applyTime,a.id as a_id,a.username as a_username,a2.id as at_id,a2.username as at_username
+	</sql>
+	
+	<sql id="base_where">
+		<where>
+			<if test="applierId!=null">
+				AND uf.applier_id=#{applierId}
+			</if>
+			<if test="beginDate!=null">
+				AND uf.applyTime &gt;= #{beginDate}
+			</if>
+			<if test="endDate!=null">
+				AND uf.applyTime &lt;= #{endDate}
+			</if>
+			<if test="state>-1">
+				AND uf.state = #{state}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="base_column" />
+		from userfile uf left join logininfo a on uf.applier_id = a.id left join logininfo a2 on uf.auditor_id = a2.id
+		where uf.id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="queryForCount" resultType="int">
+		select count(uf.id) from userfile uf
+		<include refid="base_where" />
+	</select>
+	
+	<select id="query" resultMap="BaseResultMap">
+		select <include refid="base_column" />
+		from userfile uf left join logininfo a on uf.applier_id = a.id left join logininfo a2 on uf.auditor_id = a2.id
+		<include refid="base_where" />
+		<if test="pageSize>-1">
+			LIMIT #{start},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="listUnSetTypeFiles" resultMap="BaseResultMap">
+		select <include refid="base_column" />
+		from userfile uf left join logininfo a on uf.applier_id = a.id left join logininfo a2 on uf.auditor_id = a2.id
+		<where>
+			AND uf.applier_id = #{applierId}
+			<if test="unselected">
+				AND filetype_id is null
+			</if>
+			<if test="!unselected">
+				AND filetype_id is not null
+			</if>
+		</where>
+	</select>
+	
+</mapper>

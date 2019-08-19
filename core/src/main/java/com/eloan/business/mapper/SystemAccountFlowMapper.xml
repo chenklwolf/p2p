@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eloan.business.mapper.SystemAccountFlowMapper">
+
+	<resultMap type="SystemAccountFlow" id="systemaccountflow_mapping">
+		<!-- 基本属性 -->
+		<id property="id" column="id"/>
+		<result property="createdDate" column="createdDate"/>
+		<result property="accountActionType" column="accountactiontype"/>
+		<result property="amount" column="amount"/>
+		<result property="note" column="note"/>
+		<result property="balance" column="balance"/>
+		<result property="freezedAmount" column="freezedamount"/>
+		<result property="systemAccountId" column="systemaccount_id" />
+		<association property="targetUser" column="targetuser_id" select="com.eloan.base.mapper.LogininfoMapper.selectByPrimaryKey" />
+	</resultMap>
+
+	<sql id="systemaccountflow_columns">
+		sf.id,
+		sf.createdDate,
+		sf.accountactiontype,
+		sf.amount,
+		sf.note,
+		sf.balance,
+		sf.freezedamount,
+		sf.systemaccount_id,
+		sf.targetuser_id
+	</sql>
+
+	<!-- 添加系统账户流水信息 -->
+	<insert id="addSystemAccountFlow" parameterType="SystemAccountFlow" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+		insert into systemaccountflow (createdDate,accountactiontype,
+								amount,note,balance,freezedamount,systemaccount_id,targetuser_id)
+    	values (now(),#{accountActionType},#{amount}, #{note}, #{balance},
+      		    				#{freezedAmount},#{systemAccountId},#{targetUser.id})
+	</insert>
+
+</mapper>

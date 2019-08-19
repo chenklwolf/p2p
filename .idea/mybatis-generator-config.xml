@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MyBatisGeneratorConfiguration">
+    <option name="credentials">
+      <map>
+        <entry key="jdbc:mysql://localhost:3306/p2p">
+          <value>
+            <Credential>
+              <option name="username" value="root" />
+            </Credential>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="tableConfigs">
+      <map>
+        <entry key="userbankinfo">
+          <value>
+            <TableConfig>
+              <option name="basePackage" value="com.eloan.business" />
+              <option name="comment" value="true" />
+              <option name="domainName" value="Userbankinfo" />
+              <option name="domainPackage" value="com.eloan.business.domain" />
+              <option name="exampleName" value="UserbankinfoExample" />
+              <option name="examplePackage" value="com.eloan.business.domain" />
+              <option name="examplePostfix" value="Example" />
+              <option name="mapperName" value="UserbankinfoMapper" />
+              <option name="mapperPackage" value="com.eloan.business.mapper" />
+              <option name="mapperPostfix" value="Mapper" />
+              <option name="moduleRootPath" value="$PROJECT_DIR$" />
+              <option name="name" value="userbankinfo" />
+              <option name="primaryKey" value="id" />
+              <option name="resourcePath" value="src/main/resources" />
+              <option name="sourcePath" value="src/main/java" />
+              <option name="tableName" value="userbankinfo" />
+              <option name="useExample" value="true" />
+              <option name="xmlPackage" value="mapper" />
+            </TableConfig>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

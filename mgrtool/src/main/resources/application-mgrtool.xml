@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<import resource="classpath:applicationContext.xml" />
+
+	<!-- 支持注解驱动 -->
+	<mvc:annotation-driven />
+
+	<!-- 注解扫描 -->
+	<context:component-scan
+		base-package="com.eloan.mgrtool.controller;com.eloan.mgrtool.util" />
+
+	<!-- 配置freemarker本身 -->
+	<bean
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<!-- freemarker模板的编码 -->
+		<property name="defaultEncoding" value="UTF-8" />
+		<!-- freemarker找模板的目录 -->
+		<property name="templateLoaderPath" value="/WEB-INF/views/" />
+		<!-- freemarker的一些基本输出设置 -->
+		<property name="freemarkerSettings">
+			<value>
+				number_format = 0.##
+				datetime_format = yyyy-MM-dd HH:mm:ss
+			</value>
+		</property>
+	</bean>
+
+
+	<!-- 配置viewResolver -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<!-- 把session中的属性直接添加到freemarker的上下文中,我们就可以在页面上直接使用session中的属性 -->
+		<property name="exposeSessionAttributes" value="true" />
+		<!-- 配置模板文件的后缀 -->
+		<property name="suffix" value=".ftl" />
+		<!-- 配置输出文件的编码类型 -->
+		<property name="contentType" value="text/html;charset=UTF-8" />
+	</bean>
+
+	<!-- 配置检查摘要信息的作业类 -->
+	<bean id="checkAbstractInfoJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="checkAbstractInfoTask" />
+		<property name="targetMethod" value="executeCheck" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+
+	<!-- 作业的调度方式 -->
+	<bean id="checkAbstractInfoTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="checkAbstractInfoJob" />
+		<property name="startDelay" value="#{1000*10}" /><!-- 调度工厂实例化后，经过0秒开始执行调度 -->
+		<property name="repeatInterval" value="5000" /><!-- 每5秒调度一次 -->
+	</bean>
+
+	<!-- 配置调度工厂 
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="checkAbstractInfoTrigger" />
+			</list>
+		</property>
+	</bean>
+	-->
+</beans>

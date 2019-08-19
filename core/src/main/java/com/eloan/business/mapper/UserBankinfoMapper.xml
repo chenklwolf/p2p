@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eloan.business.mapper.UserBankinfoMapper" >
+  <resultMap id="BaseResultMap" type="com.eloan.business.domain.UserBankinfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="bankname" property="bankName" jdbcType="VARCHAR" />
+    <result column="bankforkname" property="bankForkName" jdbcType="VARCHAR" />
+    <result column="accountName" property="accountName" jdbcType="VARCHAR" />
+    <result column="accountnumber" property="accountNumber" jdbcType="VARCHAR" />
+
+    <association property="logininfo" javaType="com.eloan.business.domain.Logininfo">
+      <id column="id" property="id" jdbcType="BIGINT"></id>
+      <result column="username" property="username"></result>
+    </association>
+
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, bankname, bankforkname, accountName, accountnumber, loginInfo_id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.eloan.business.domain.UserBankinfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from userbankinfo
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from userbankinfo
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from userbankinfo
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.eloan.business.domain.UserBankinfoExample" >
+    delete from userbankinfo
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.eloan.business.domain.UserBankinfo" >
+    insert into userbankinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="bankname != null" >
+        bankname,
+      </if>
+      <if test="bankforkname != null" >
+        bankforkname,
+      </if>
+      <if test="accountname != null" >
+        accountName,
+      </if>
+      <if test="accountnumber != null" >
+        accountnumber,
+      </if>
+      <if test="logininfoId != null" >
+        loginInfo_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="bankname != null" >
+        #{bankname,jdbcType=VARCHAR},
+      </if>
+      <if test="bankforkname != null" >
+        #{bankforkname,jdbcType=VARCHAR},
+      </if>
+      <if test="accountname != null" >
+        #{accountname,jdbcType=VARCHAR},
+      </if>
+      <if test="accountnumber != null" >
+        #{accountnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="logininfoId != null" >
+        #{logininfoId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.eloan.business.domain.UserBankinfoExample" resultType="java.lang.Integer" >
+    select count(*) from userbankinfo
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update userbankinfo
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.bankname != null" >
+        bankname = #{record.bankname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bankforkname != null" >
+        bankforkname = #{record.bankforkname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountname != null" >
+        accountName = #{record.accountname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountnumber != null" >
+        accountnumber = #{record.accountnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.logininfoId != null" >
+        loginInfo_id = #{record.logininfoId,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update userbankinfo
+    set id = #{record.id,jdbcType=BIGINT},
+      bankname = #{record.bankname,jdbcType=VARCHAR},
+      bankforkname = #{record.bankforkname,jdbcType=VARCHAR},
+      accountName = #{record.accountname,jdbcType=VARCHAR},
+      accountnumber = #{record.accountnumber,jdbcType=VARCHAR},
+      loginInfo_id = #{record.logininfoId,jdbcType=BIGINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eloan.business.domain.UserBankinfo" >
+    update userbankinfo
+    <set >
+      <if test="bankname != null" >
+        bankname = #{bankname,jdbcType=VARCHAR},
+      </if>
+      <if test="bankforkname != null" >
+        bankforkname = #{bankforkname,jdbcType=VARCHAR},
+      </if>
+      <if test="accountname != null" >
+        accountName = #{accountname,jdbcType=VARCHAR},
+      </if>
+      <if test="accountnumber != null" >
+        accountnumber = #{accountnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="logininfoId != null" >
+        loginInfo_id = #{logininfoId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eloan.business.domain.UserBankinfo" >
+    update userbankinfo
+    set bankname = #{bankname,jdbcType=VARCHAR},
+      bankforkname = #{bankforkname,jdbcType=VARCHAR},
+      accountName = #{accountname,jdbcType=VARCHAR},
+      accountnumber = #{accountnumber,jdbcType=VARCHAR},
+      loginInfo_id = #{logininfoId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into `userbankinfo` (bankForkName, bankName, accountNumber,logininfo_id, accountName)
+    values (#{bankForkName,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, #{accountNumber,jdbcType=VARCHAR},
+      #{logininfo.id,jdbcType=BIGINT}, #{accountName,jdbcType=VARCHAR})
+  </insert>
+
+   <select id="selectByUser" resultMap="BaseResultMap">
+     SELECT u1.*
+FROM userbankinfo u1 INNER JOIN logininfo l on u1.loginInfo_id = l.id
+WHERE u1.loginInfo_id = #{id}
+   </select>
+</mapper>

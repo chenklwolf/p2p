@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="eloan-mockserver:war">
+    <output-path>$PROJECT_DIR$/eloan-mockserver/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>eloan-mockserver</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="eloan-mockserver-1.0.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="eloan-mockserver:war exploded" />
+    </root>
+  </artifact>
+</component>

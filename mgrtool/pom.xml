@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>parent</artifactId>
+		<groupId>com.xmg.eloan</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../parent/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>mgrtool</artifactId>
+	<packaging>war</packaging>
+	<name>eloan-mgrtool</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.xmg.eloan</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<!-- json处理工具，springmvc处理json依赖。 -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.9.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-lgpl</artifactId>
+			<version>1.9.8</version>
+		</dependency>
+
+		<!-- freemarker -->
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.23</version>
+		</dependency>
+
+		<!-- quartzs -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.2</version>
+		</dependency>
+		
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- 添加一个tomcat插件 -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<!-- tomcat启动的端口 -->
+					<port>8081</port>
+					<!-- 应用的上下文路径 -->
+					<path>/</path>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

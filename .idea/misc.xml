@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/eloan-mockserver" />
+    <file type="web" url="file://$PROJECT_DIR$/mgrtool" />
+    <file type="web" url="file://$PROJECT_DIR$/uiweb" />
+  </component>
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/core/pom.xml" />
+        <option value="$PROJECT_DIR$/parent/pom.xml" />
+        <option value="$PROJECT_DIR$/eloan-mockserver/pom.xml" />
+        <option value="$PROJECT_DIR$/mgrtool/pom.xml" />
+        <option value="$PROJECT_DIR$/uiweb/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+</project>

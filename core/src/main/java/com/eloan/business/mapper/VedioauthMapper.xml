@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eloan.business.mapper.VedioauthMapper">
+	<resultMap id="BaseResultMap" type="com.eloan.business.domain.Vedioauth">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="state" property="state" jdbcType="TINYINT" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="auditTime" property="auditTime" jdbcType="TIMESTAMP" />
+		<result column="applyTime" property="applyTime" jdbcType="TIMESTAMP" />
+		
+		<association property="applier" javaType="Logininfo" columnPrefix="a_">
+			<id column="id" property="id"/>
+			<result column="username" property="username"/>
+		</association>
+		<association property="auditor" javaType="Logininfo" columnPrefix="at_">
+			<id column="id" property="id"/>
+			<result column="username" property="username"/>
+		</association>
+	</resultMap>
+
+	<insert id="insert" parameterType="Vedioauth"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into vedioauth (state, remark, auditTime,applyTime, auditor_id, applier_id)
+		values (#{state,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR},#{auditTime,jdbcType=TIMESTAMP},
+		#{applyTime,jdbcType=TIMESTAMP}, #{auditor.id,jdbcType=BIGINT}, #{applier.id,jdbcType=BIGINT})
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="Vedioauth">
+		update vedioauth
+		set state = #{state,jdbcType=TINYINT},
+		remark = #{remark,jdbcType=VARCHAR},
+		auditTime = #{auditTime,jdbcType=TIMESTAMP},
+		applyTime = #{applyTime,jdbcType=TIMESTAMP},
+		auditor_id = #{auditor.id,jdbcType=BIGINT},
+		applier_id = #{applier.id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<sql id="base_column">
+		va.id, va.state, va.remark, va.auditTime, va.applyTime,a.id as a_id,a.username as a_username,a2.id as at_id,a2.username as at_username
+	</sql>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="base_column" />
+		from vedioauth va left join logininfo a on va.applier_id = a.id left join logininfo a2 on va.auditor_id = a2.id
+		where va.id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<sql id="base_where">
+		<where>
+			<if test="keyword!=null">
+				AND a.username LIKE concat(#{keyword},'%')
+			</if>
+			<if test="beginDate!=null">
+				AND va.applyTime &gt;= #{beginDate}
+			</if>
+			<if test="endDate!=null">
+				AND va.applyTime &lt;= #{endDate}
+			</if>
+			<if test="state>-1">
+				AND va.state = #{state}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="queryForCount" resultType="int">
+		select count(va.id)
+		from vedioauth va left join logininfo a on va.applier_id = a.id
+		<include refid="base_where" />
+	</select>
+	
+	<select id="query" resultMap="BaseResultMap">
+		select <include refid="base_column" />
+		from vedioauth va left join logininfo a on va.applier_id = a.id left join logininfo a2 on va.auditor_id = a2.id
+		<include refid="base_where" />
+		<if test="pageSize>-1">
+			LIMIT #{start},#{pageSize}
+		</if>
+	</select>
+	
+</mapper>

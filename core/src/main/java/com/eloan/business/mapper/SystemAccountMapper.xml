@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eloan.business.mapper.SystemAccountMapper">
+
+	<resultMap type="SystemAccount" id="systemaccount_mapping">
+		<id property="id" column="id"/>
+		<result property="version" column="version"/>
+		<result property="beginDate" column="begindate"/>
+		<result property="endDate" column="enddate"/>
+		<result property="createDate" column="createDate"/>
+		<result property="totalBalance" column="totalbalance"/>
+		<result property="freezedAmount" column="freezedamount"/>
+	</resultMap>
+	
+	<sql id="systemaccount_columns">
+		id,version,begindate,createDate,enddate,totalbalance,freezedamount
+	</sql>
+	
+	<!-- 添加一个系统账户的信息 -->
+	<insert id="addSystemAccount" parameterType="SystemAccount" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+		insert into systemaccount(createdate,version,begindate,enddate,totalbalance,freezedamount)
+    	values (now(),0,#{beginDate}, #{endDate},#{totalBalance},#{freezedAmount})
+	</insert>
+	
+	<!-- 修改系统账户信息 -->
+	<update id="updateSystemAccount" parameterType="SystemAccount">
+		UPDATE systemaccount
+		SET version = version+1,totalbalance = #{totalBalance},freezedamount=#{freezedAmount}
+		WHERE id = #{id} and version = #{version}
+	</update>
+	
+	<!-- 第一个系统账户是否初始化 -->
+	<select id="unInitialize" resultType="boolean">
+		SELECT count(id) &lt;= 0
+		FROM systemaccount
+	</select>
+	
+	<!-- 得到当前活动的系统账户 -->
+	<select id="getCurrentSystemAccount" resultMap="systemaccount_mapping">
+		SELECT <include refid="systemaccount_columns"/>
+		FROM systemaccount 
+		WHERE begindate &lt;=now() and enddate is null
+	</select>
+	
+</mapper>
