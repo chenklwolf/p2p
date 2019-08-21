@@ -65,15 +65,25 @@ public class LogininfoServiceImpl implements ILogininfoService {
 		return this.loginInfoMapper.getCountByUsername(name, userType) <= 0;
 	}
 
+	/**
+	 * 登录的时候，
+	 * 比对数据库密码，插入日志log
+	 * @param name
+	 * @param password
+	 * @param userType
+	 * @param ip
+	 * @return
+	 */
 	@Override
 	public Logininfo login(String name, String password, int userType, String ip) {
 		IpLog log = new IpLog(name, new Date(), ip, userType, null);
+		//userType如果是前台登录然后存储0，后台1
 		Logininfo current = this.loginInfoMapper.login(name,
 				MD5.encode(password), userType);
 		if (current != null) {
-			UserContext.putLogininfo(current);
+			UserContext.putLogininfo(current); //放进session中
 			log.setLoginInfoId(current.getId());
-			log.setLoginState(IpLog.LOGINSTATE_SUCCESS);
+			log.setLoginState(IpLog.LOGINSTATE_SUCCESS); //登录成功状态1
 		}
 		ipLogMapper.insert(log);
 		return current;
